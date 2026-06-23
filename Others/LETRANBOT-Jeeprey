@@ -1,0 +1,127 @@
+"""
+Project:    Final Blue 
+Type:       spike, word-blocks, slot 1
+Last saved: 2026-06-23T16:01:01.127Z
+"""
+
+from pybricks.hubs import PrimeHub
+from pybricks.parameters import Color, Port, Direction
+from pybricks.pupdevices import ColorSensor, Motor
+from pybricks.tools import wait
+
+hub = PrimeHub()
+colorsensor_a = ColorSensor(Port.A)
+motor_b = Motor(Port.B)
+motor_c = Motor(Port.C)
+colorsensor_d = ColorSensor(Port.D)
+motor_e = Motor(Port.E)
+colorsensor_f = ColorSensor(Port.F)
+default_speeds = {motor_b: 500, motor_c: 500, motor_e: 500}
+
+# ------------------------------- GROUP: START ------------------------------- #
+def stack1_whenprogramstarts_fn():
+    for _ in range(12):
+        starting()
+        stabilizer()
+        while not (colorsensor_d.color() == Color.BLUE):
+            pass
+        motor_c.brake()
+        if colorsensor_d.color() == Color.BLUE:
+            corner()
+    motor_c.run_angle(default_speeds[motor_c], 1260)
+# ------------------------------ GROUP: MYBLOCK ------------------------------ #
+def starting():
+    forward()
+def forward():
+    motor_e.dc(200)
+    default_speeds[motor_e] = 2000
+    default_speeds[motor_c] = 800
+    motor_e.run_target(default_speeds[motor_e], 0)
+    hub.imu.reset_heading(0)
+    motor_c.run(default_speeds[motor_c])
+def stabilizer():
+    while not (colorsensor_d.color() == Color.BLUE):
+        if hub.imu.heading() > 0:
+            motor_e.run_target(default_speeds[motor_e], -1)
+        if hub.imu.heading() < 0:
+            motor_e.run_target(default_speeds[motor_e], 1.1)
+    motor_c.brake()
+def corner():
+    motor_e.run_target(default_speeds[motor_e], 269)
+    motor_c.run_angle(default_speeds[motor_c], 630)
+    motor_e.run_target(default_speeds[motor_e], 89)
+    motor_c.run_angle(default_speeds[motor_c], -486)
+    motor_e.run_target(default_speeds[motor_e], 0)
+    motor_c.run(default_speeds[motor_c])
+def turn_right():
+    motor_e.run_target(default_speeds[motor_e], 270)
+    motor_c.run_angle(default_speeds[motor_c], -360)
+    motor_e.run_target(default_speeds[motor_e], 90)
+    motor_c.run_angle(default_speeds[motor_c], 360)
+    motor_e.run_target(default_speeds[motor_e], 270)
+    motor_c.run_angle(default_speeds[motor_c], 720)
+    motor_e.run_target(default_speeds[motor_e], 0)
+    motor_c.run_angle(default_speeds[motor_c], -360)
+    motor_e.run_target(default_speeds[motor_e], 270)
+    motor_c.run_angle(default_speeds[motor_c], 756)
+    motor_e.run_target(default_speeds[motor_e], 45)
+    motor_c.run_angle(default_speeds[motor_c], 630)
+    motor_e.run_target(default_speeds[motor_e], 0)
+    motor_c.run_angle(default_speeds[motor_c], -576)
+    wait(3000)
+    forward()
+    stabilizer()
+def turn_left():
+    motor_e.run_target(default_speeds[motor_e], 90)
+    motor_c.run_angle(default_speeds[motor_c], -360)
+    motor_e.run_target(default_speeds[motor_e], 270)
+    motor_c.run_angle(default_speeds[motor_c], 450)
+    motor_e.run_target(default_speeds[motor_e], 90)
+    motor_c.run_angle(default_speeds[motor_c], 720)
+    motor_e.run_target(default_speeds[motor_e], 0)
+    motor_c.run_angle(default_speeds[motor_c], -360)
+    motor_e.run_target(default_speeds[motor_e], 90)
+    motor_c.run_angle(default_speeds[motor_c], 684)
+    motor_e.run_target(default_speeds[motor_e], 330)
+    motor_c.run_angle(default_speeds[motor_c], 684)
+    motor_e.run_target(default_speeds[motor_e], 10)
+    motor_c.run_angle(default_speeds[motor_c], -720)
+    wait(3000)
+    forward()
+    stabilizer()
+def ending():
+    motor_b.run(default_speeds[motor_b])
+    while not (((colorsensor_d.color() == Color.RED) or (colorsensor_d.color() == Color.GREEN)) or ((colorsensor_f.color() == Color.RED) or (colorsensor_f.color() == Color.GREEN))):
+        pass
+    motor_b.brake()
+    if ((colorsensor_d.color() == Color.RED) or (colorsensor_d.color() == Color.GREEN)) or ((colorsensor_f.color() == Color.RED) or (colorsensor_f.color() == Color.GREEN)):
+        color_detection()
+def color_detection():
+    if motor_b.color() == Color.GREEN:
+        turn_left()
+    if motor_b.color() == Color.RED:
+        turn_right()
+    if colorsensor_f.color() == Color.GREEN:
+        turn_left()
+    if colorsensor_f.color() == Color.RED:
+        turn_right()
+    if colorsensor_d.color() == Color.GREEN:
+        turn_left()
+    if colorsensor_d.color() == Color.RED:
+        turn_right()
+def _2_11():
+    forward()
+    while not (colorsensor_a.color() == Color.BLUE):
+        while not (((motor_b.color() == Color.RED) or (motor_b.color() == Color.GREEN)) or ((colorsensor_f.color() == Color.RED) or (colorsensor_f.color() == Color.GREEN))):
+            pass
+        motor_c.brake()
+        if ((motor_b.color() == Color.RED) or (motor_b.color() == Color.GREEN)) or ((colorsensor_f.color() == Color.RED) or (colorsensor_f.color() == Color.GREEN)):
+            color_detection()
+        motor_c.run(default_speeds[motor_c])
+    while not (colorsensor_a.color() == Color.BLUE):
+        pass
+    motor_e.brake()
+    if colorsensor_a.color() == Color.BLUE:
+        corner()
+
+stack1_whenprogramstarts_fn()
